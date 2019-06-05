@@ -1,0 +1,47 @@
+<idea-plugin>
+    <id>sncf.oui.scriptshortcut</id>
+    <name>ScriptShortcut</name>
+    <vendor email="contact.ag@laposte.net" url="https://github.com/voyages-sncf-technologies/scriptshortcut">OUI.sncf
+    </vendor>
+
+    <description><![CDATA[
+    Script Shortcut is an Android Studio plugin. It allows you to bind a .sh file of your project to a Keybord shortcut.<br>
+    You can set your file in Settings> Tools> Script Shortcut. You can run it with the keyboard shortcut or from the toolbar menu Tools.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.android</depends>
+
+    <!-- Android Studio 3.3+ -->
+    <!-- see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
+    <idea-version since-build="182"/>
+
+    <project-components>
+        <component>
+            <!-- Allow to save the user settings -->
+            <implementation-class>
+                sncf.oui.scriptshortcut.UserConfiguration
+            </implementation-class>
+            <loadForDefaultProject/>
+        </component>
+    </project-components>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Display the UI in the Settings window -->
+        <defaultProjectTypeProvider type="Android"/>
+        <projectConfigurable groupId="tools" id="script.shortcut.configuration"
+                             instance="sncf.oui.scriptshortcut.Settings"/>
+    </extensions>
+
+    <actions>
+        <!-- Bind the keyboard shortcut to the class handling the event -->
+        <action id="script.shortcut.RunScript"
+                class="sncf.oui.scriptshortcut.RunScriptAction"
+                text="Run script"
+                description="Run the script specified in Parameters>Tools>Script Shortcut">
+
+            <add-to-group group-id="RunnerActions" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="control F11"/>
+        </action>
+    </actions>
+</idea-plugin>
