@@ -27,10 +27,9 @@
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Display the UI in the Settings window -->
         <defaultProjectTypeProvider type="Android"/>
         <projectConfigurable groupId="tools" id="script.shortcut.configuration"
-                             instance="sncf.oui.scriptshortcut.Settings"/>
+                             instance="sncf.oui.scriptshortcut.DebugPanel"/>
     </extensions>
 
     <actions>

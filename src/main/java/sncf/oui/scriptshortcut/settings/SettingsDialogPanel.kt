@@ -10,7 +10,7 @@ import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-class Settings(private val project: Project) : Configurable {
+class SettingsDialogPanel(private val project: Project) : Configurable {
 
     private var pathLabel: JLabel? = null
     private var argumentLabel: JLabel? = null
@@ -34,6 +34,7 @@ class Settings(private val project: Project) : Configurable {
 
     override fun apply() {
         saveFields()
+
         val dialog = SettingsDialog(project)
         dialog.show()
     }
@@ -52,6 +53,10 @@ class Settings(private val project: Project) : Configurable {
         loadConfig()
 
         return mainPanel
+    }
+
+    fun initData() {
+        pathField?.text = "nosnoi"
     }
 
     private fun initListener() {
