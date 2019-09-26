@@ -1,8 +1,8 @@
-package sncf.oui.scriptshortcut
+package sncf.oui.scriptshortcut.settings
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
-import sncf.oui.scriptshortcut.settings.SettingsDialog
+import sncf.oui.scriptshortcut.UserConfiguration
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
