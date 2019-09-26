@@ -34,14 +34,26 @@
     </extensions>
 
     <actions>
-        <!-- Bind the keyboard shortcut to the class handling the event -->
-        <action id="script.shortcut.RunScript"
-                class="sncf.oui.scriptshortcut.RunScriptAction"
-                text="Run script"
-                description="Run the script specified in Parameters>Tools>Script Shortcut">
+        <group id="script.shortcut" text="Script Shortcut" description="Script Shortcut" popup="true">
 
-            <add-to-group group-id="RunnerActions" anchor="last"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="control F11"/>
-        </action>
+            <action id="script.shortcut.RunScript"
+                    class="sncf.oui.scriptshortcut.RunScriptAction"
+                    text="Run script"
+                    description="Run the script specified in Parameters>Tools>Script Shortcut">
+
+                <keyboard-shortcut keymap="$default" first-keystroke="control F11"/>
+            </action>
+
+            <separator/>
+
+            <action id="script.shortcut.Settings"
+                    class="sncf.oui.scriptshortcut.settings.SettingsAction" text="Settings ..."
+                    description="Configure the plugin settings">
+            </action>
+
+            <add-to-group group-id="AndroidToolsGroup" anchor="first"/>
+        </group>
+
+
     </actions>
 </idea-plugin>

@@ -2,6 +2,7 @@ package sncf.oui.scriptshortcut
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
+import sncf.oui.scriptshortcut.settings.SettingsDialog
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -19,7 +20,7 @@ class Settings(private val project: Project) : Configurable {
     private var argumentField: JTextField? = null
     private var shortcutField: JLabel? = null
 
-    private var mainPanel: JPanel? = null
+    public var mainPanel: JPanel? = null
 
     private var modified = false
 
@@ -33,6 +34,8 @@ class Settings(private val project: Project) : Configurable {
 
     override fun apply() {
         saveFields()
+        val dialog = SettingsDialog(project)
+        dialog.show()
     }
 
     private fun saveFields() {
