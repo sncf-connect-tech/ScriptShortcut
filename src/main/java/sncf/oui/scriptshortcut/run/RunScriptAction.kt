@@ -1,10 +1,12 @@
-package sncf.oui.scriptshortcut
+package sncf.oui.scriptshortcut.run
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.android.tools.idea.gradle.project.sync.GradleSyncState
 import com.intellij.openapi.project.Project
+import sncf.oui.scriptshortcut.NotificationHelper
+import sncf.oui.scriptshortcut.UserConfiguration
 import java.io.File
 import java.io.InputStreamReader
 import java.io.BufferedReader

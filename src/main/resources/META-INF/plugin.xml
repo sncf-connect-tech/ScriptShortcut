@@ -36,7 +36,7 @@
         <group id="script.shortcut" text="Script Shortcut" description="Script Shortcut" popup="true">
 
             <action id="script.shortcut.RunScript"
-                    class="sncf.oui.scriptshortcut.RunScriptAction"
+                    class="sncf.oui.scriptshortcut.run.RunScriptAction"
                     text="Run script"
                     description="Run the script specified in Parameters>Tools>Script Shortcut">
 

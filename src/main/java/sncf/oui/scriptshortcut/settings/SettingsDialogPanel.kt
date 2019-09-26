@@ -22,10 +22,8 @@ class SettingsDialogPanel(private val project: Project) : Configurable {
 
     public var mainPanel: JPanel? = null
 
-    private var modified = false
-
     override fun isModified(): Boolean {
-        return modified
+        return false
     }
 
     override fun getDisplayName(): String {
@@ -33,56 +31,25 @@ class SettingsDialogPanel(private val project: Project) : Configurable {
     }
 
     override fun apply() {
-        saveFields()
-
-        val dialog = SettingsDialog(project)
-        dialog.show()
     }
 
-    private fun saveFields() {
-        val config = UserConfiguration.getInstance(project)
-        config.scriptPath = pathField?.text ?: ""
-        config.arguments = argumentField?.text ?: ""
-
-        modified = false
-    }
 
     override fun createComponent(): JComponent? {
-        initListener()
-
-        loadConfig()
-
         return mainPanel
     }
 
-    fun initData() {
-        pathField?.text = "nosnoi"
+    fun init(scriptPath: String, arguments: String) {
+        pathField?.text = scriptPath
+        argumentField?.text = arguments
     }
 
-    private fun initListener() {
 
-        val docListener = object : DocumentListener {
-            override fun changedUpdate(e: DocumentEvent?) {
-                modified = true
-            }
-
-            override fun insertUpdate(e: DocumentEvent?) {
-                modified = true
-            }
-
-            override fun removeUpdate(e: DocumentEvent?) {
-                modified = true
-            }
-        }
-
-        pathField?.document?.addDocumentListener(docListener)
-        argumentField?.document?.addDocumentListener(docListener)
+    fun getPathField(): String {
+        return pathField?.text ?: ""
     }
 
-    private fun loadConfig() {
-        val config = UserConfiguration.getInstance(project)
-        pathField?.text = config.scriptPath
-        argumentField?.text = config.arguments
+    fun getArguments(): String {
+        return argumentField?.text ?: ""
     }
 
 }
