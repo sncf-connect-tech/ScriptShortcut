@@ -3,12 +3,11 @@ package sncf.oui.scriptshortcut.settings
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import sncf.oui.scriptshortcut.UserConfiguration
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
+import com.android.internal.R.id.parentPanel
+import javax.swing.*
+
 
 class SettingsDialogPanel(private val project: Project) : Configurable {
 
@@ -16,9 +15,11 @@ class SettingsDialogPanel(private val project: Project) : Configurable {
     private var argumentLabel: JLabel? = null
     private var shortcutLabel: JLabel? = null
 
-    private var pathField: JTextField? = null
+    private var pathField: JLabel? = null
     private var argumentField: JTextField? = null
     private var shortcutField: JLabel? = null
+
+    private var editPathButton: JButton? = null
 
     public var mainPanel: JPanel? = null
 
@@ -41,6 +42,11 @@ class SettingsDialogPanel(private val project: Project) : Configurable {
     fun init(scriptPath: String, arguments: String) {
         pathField?.text = scriptPath
         argumentField?.text = arguments
+
+        editPathButton?.addActionListener {
+            val fc = JFileChooser()
+            fc.showOpenDialog(mainPanel)
+        }
     }
 
 
