@@ -2,11 +2,9 @@ package sncf.oui.scriptshortcut.settings
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
-import sncf.oui.scriptshortcut.UserConfiguration
-import javax.swing.event.DocumentEvent
-import javax.swing.event.DocumentListener
-import com.android.internal.R.id.parentPanel
+import java.io.File
 import javax.swing.*
+import javax.swing.filechooser.FileNameExtensionFilter
 
 
 class SettingsDialogPanel(private val project: Project) : Configurable {
@@ -44,8 +42,15 @@ class SettingsDialogPanel(private val project: Project) : Configurable {
         argumentField?.text = arguments
 
         editPathButton?.addActionListener {
-            val fc = JFileChooser()
-            fc.showOpenDialog(mainPanel)
+            val fileChooser = JFileChooser()
+            val filter = FileNameExtensionFilter("Shell script", "sh")
+            fileChooser.fileFilter = filter
+            fileChooser.currentDirectory = File(project.basePath ?: "")
+
+            val resultStatus = fileChooser.showOpenDialog(mainPanel)
+            if (resultStatus == JFileChooser.APPROVE_OPTION) {
+                pathField?.text = fileChooser.selectedFile.absolutePath
+            }
         }
     }
 

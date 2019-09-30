@@ -25,13 +25,13 @@
             <loadForDefaultProject/>
         </component>
     </project-components>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <defaultProjectTypeProvider type="Android"/>
-        <projectConfigurable groupId="tools" id="script.shortcut.configuration"
-                             instance="sncf.oui.scriptshortcut.DebugPanel"/>
-    </extensions>
-
+    <!-- Uncomment to debug
+        <extensions defaultExtensionNs="com.intellij">
+            <defaultProjectTypeProvider type="Android"/>
+            <projectConfigurable groupId="tools" id="script.shortcut.configuration"
+                                 instance="sncf.oui.scriptshortcut.DebugPanel"/>
+        </extensions>
+    -->
     <actions>
         <group id="script.shortcut" text="Script Shortcut" description="Script Shortcut" popup="true">
 

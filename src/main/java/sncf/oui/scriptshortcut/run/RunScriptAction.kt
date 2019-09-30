@@ -26,11 +26,11 @@ class RunScriptAction : AnAction() {
             return
         }
 
-        val scriptRelativePath = UserConfiguration.getInstance(project).scriptPath
+        val scriptAbsolutePath = UserConfiguration.getInstance(project).scriptPath
         val arguments = UserConfiguration.getInstance(project).arguments
         val projectFolder = project.basePath ?: ""
 
-        executeScript(scriptRelativePath, arguments, projectFolder)
+        executeScript(scriptAbsolutePath, arguments, projectFolder)
     }
 
 
@@ -43,8 +43,8 @@ class RunScriptAction : AnAction() {
         }
     }
 
-    private fun executeScript(scriptRelativePath: String, arguments: String, projectFolder: String?) {
-        val absolutePath = File("$projectFolder/$scriptRelativePath")
+    private fun executeScript(scriptAbsolutePath: String, arguments: String, projectFolder: String?) {
+        val absolutePath = File(scriptAbsolutePath)
         if (!absolutePath.isFile) {
             NotificationHelper.error("Abort : script file not found $absolutePath")
             return
@@ -53,7 +53,7 @@ class RunScriptAction : AnAction() {
         NotificationHelper.info("------------------ Start running script ------------------")
         Runtime.getRuntime()
             .exec(
-                arrayOf("/bin/sh", "-c", "$scriptRelativePath $arguments"),
+                arrayOf("/bin/sh", "-c", "$scriptAbsolutePath $arguments"),
                 arrayOf(projectFolder),
                 File(projectFolder)
             )?.let { process ->
