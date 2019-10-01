@@ -63,7 +63,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="Relative path"/>
+              <text value="Script path"/>
             </properties>
           </component>
           <component id="45d2f" class="javax.swing.JLabel" binding="argumentLabel">
