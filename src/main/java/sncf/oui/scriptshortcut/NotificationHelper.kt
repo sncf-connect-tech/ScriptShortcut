@@ -16,6 +16,14 @@ object NotificationHelper {
         )
     }
 
+    fun warning(message: String) {
+        sendNotification(
+            "[Error] $message",
+            NotificationType.INFORMATION,
+            INFO
+        )
+    }
+
     fun error(message: String) {
         sendNotification(
             message,

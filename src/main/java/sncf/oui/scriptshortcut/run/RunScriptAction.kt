@@ -7,10 +7,9 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import sncf.oui.scriptshortcut.NotificationHelper
+import sncf.oui.scriptshortcut.StreamConsumer
 import sncf.oui.scriptshortcut.UserConfiguration
-import java.io.BufferedReader
 import java.io.File
-import java.io.InputStreamReader
 
 
 class RunScriptAction : AnAction() {
@@ -38,7 +37,6 @@ class RunScriptAction : AnAction() {
         }
     }
 
-
     private fun isGradleSyncInProgress(project: Project): Boolean {
         return try {
             GradleSyncState.getInstance(project).isSyncInProgress
@@ -55,29 +53,28 @@ class RunScriptAction : AnAction() {
             return
         }
 
-        NotificationHelper.info("------------------ Start running script ------------------")
+        NotificationHelper.info("--- Start running ${absolutePath.name} ---")
         Runtime.getRuntime()
             .exec(
                 arrayOf("/bin/sh", "-c", "$scriptAbsolutePath $arguments"),
                 arrayOf(projectFolder),
                 File(projectFolder)
             )?.let { process ->
-                waitForExecutionAndDisplayOutput(process)
+                consumeProcess(process)
             }
     }
 
-    private fun waitForExecutionAndDisplayOutput(process: Process) {
-        val lineReader = BufferedReader(InputStreamReader(process.inputStream))
-        lineReader.lines().forEach { NotificationHelper.info(it) }
-
-        val errorReader = BufferedReader(InputStreamReader(process.errorStream))
-        errorReader.lines().forEach { NotificationHelper.error(it) }
+    private fun consumeProcess(process: Process) {
+        StreamConsumer(process.inputStream).start()
+        StreamConsumer(process.errorStream, true).start()
 
         val exitStatus = process.waitFor()
         if (exitStatus == 0) {
-            NotificationHelper.info("------------------ Script finished successfully ------------------")
+            NotificationHelper.info("--- Script finished successfully ---")
         } else {
-            NotificationHelper.info("------------------ Script finished with exit value $exitStatus ------------------")
+            NotificationHelper.error("Script finished with exit value $exitStatus")
         }
     }
+
+
 }
