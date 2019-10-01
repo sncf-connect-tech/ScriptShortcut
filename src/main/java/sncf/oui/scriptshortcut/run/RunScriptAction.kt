@@ -1,13 +1,15 @@
-package sncf.oui.scriptshortcut
+package sncf.oui.scriptshortcut.run
 
+import com.android.tools.idea.gradle.project.sync.GradleSyncState
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.android.tools.idea.gradle.project.sync.GradleSyncState
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import sncf.oui.scriptshortcut.NotificationHelper
+import sncf.oui.scriptshortcut.StreamConsumer
+import sncf.oui.scriptshortcut.UserConfiguration
 import java.io.File
-import java.io.InputStreamReader
-import java.io.BufferedReader
 
 
 class RunScriptAction : AnAction() {
@@ -24,13 +26,16 @@ class RunScriptAction : AnAction() {
             return
         }
 
-        val scriptRelativePath = UserConfiguration.getInstance(project).scriptPath
+        val scriptAbsolutePath = UserConfiguration.getInstance(project).scriptPath
         val arguments = UserConfiguration.getInstance(project).arguments
         val projectFolder = project.basePath ?: ""
 
-        executeScript(scriptRelativePath, arguments, projectFolder)
+        ApplicationManager.getApplication().executeOnPooledThread {
+            ApplicationManager.getApplication().runReadAction {
+                executeScript(scriptAbsolutePath, arguments, projectFolder)
+            }
+        }
     }
-
 
     private fun isGradleSyncInProgress(project: Project): Boolean {
         return try {
@@ -41,36 +46,35 @@ class RunScriptAction : AnAction() {
         }
     }
 
-    private fun executeScript(scriptRelativePath: String, arguments: String, projectFolder: String?) {
-        val absolutePath = File("$projectFolder/$scriptRelativePath")
+    private fun executeScript(scriptAbsolutePath: String, arguments: String, projectFolder: String) {
+        val absolutePath = File(scriptAbsolutePath)
         if (!absolutePath.isFile) {
             NotificationHelper.error("Abort : script file not found $absolutePath")
             return
         }
 
-        NotificationHelper.info("------------------ Start running script ------------------")
+        NotificationHelper.info("--- Start running ${absolutePath.name} ---")
         Runtime.getRuntime()
             .exec(
-                arrayOf("/bin/sh", "-c", "$scriptRelativePath $arguments"),
+                arrayOf("/bin/sh", "-c", "$scriptAbsolutePath $arguments"),
                 arrayOf(projectFolder),
                 File(projectFolder)
             )?.let { process ->
-                waitForExecutionAndDisplayOutput(process)
+                consumeProcess(process)
             }
     }
 
-    private fun waitForExecutionAndDisplayOutput(process: Process) {
-        val lineReader = BufferedReader(InputStreamReader(process.inputStream))
-        lineReader.lines().forEach { NotificationHelper.info(it) }
-
-        val errorReader = BufferedReader(InputStreamReader(process.errorStream))
-        errorReader.lines().forEach { NotificationHelper.error(it) }
+    private fun consumeProcess(process: Process) {
+        StreamConsumer(process.inputStream).start()
+        StreamConsumer(process.errorStream, true).start()
 
         val exitStatus = process.waitFor()
         if (exitStatus == 0) {
-            NotificationHelper.info("------------------ Script finished successfully ------------------")
+            NotificationHelper.info("--- Script finished successfully ---")
         } else {
-            NotificationHelper.info("------------------ Script finished with exit value $exitStatus ------------------")
+            NotificationHelper.error("Script finished with exit value $exitStatus")
         }
     }
+
+
 }
