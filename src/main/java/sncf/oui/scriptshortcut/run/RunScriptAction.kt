@@ -1,15 +1,16 @@
 package sncf.oui.scriptshortcut.run
 
+import com.android.tools.idea.gradle.project.sync.GradleSyncState
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.android.tools.idea.gradle.project.sync.GradleSyncState
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import sncf.oui.scriptshortcut.NotificationHelper
 import sncf.oui.scriptshortcut.UserConfiguration
+import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
-import java.io.BufferedReader
 
 
 class RunScriptAction : AnAction() {
@@ -30,7 +31,11 @@ class RunScriptAction : AnAction() {
         val arguments = UserConfiguration.getInstance(project).arguments
         val projectFolder = project.basePath ?: ""
 
-        executeScript(scriptAbsolutePath, arguments, projectFolder)
+        ApplicationManager.getApplication().executeOnPooledThread {
+            ApplicationManager.getApplication().runReadAction {
+                executeScript(scriptAbsolutePath, arguments, projectFolder)
+            }
+        }
     }
 
 
@@ -43,7 +48,7 @@ class RunScriptAction : AnAction() {
         }
     }
 
-    private fun executeScript(scriptAbsolutePath: String, arguments: String, projectFolder: String?) {
+    private fun executeScript(scriptAbsolutePath: String, arguments: String, projectFolder: String) {
         val absolutePath = File(scriptAbsolutePath)
         if (!absolutePath.isFile) {
             NotificationHelper.error("Abort : script file not found $absolutePath")
