@@ -8,20 +8,14 @@ object NotificationHelper {
     private val INFO = NotificationGroup.logOnlyGroup("Script Shortcut (Logging)")
     private val ERRORS = NotificationGroup.balloonGroup("Script Shortcut (Errors)")
 
-    fun info(message: String) {
-        sendNotification(
-            message,
-            NotificationType.INFORMATION,
-            INFO
-        )
-    }
-
-    fun warning(message: String) {
-        sendNotification(
-            "[Error] $message",
-            NotificationType.INFORMATION,
-            INFO
-        )
+    fun info(message: String?) {
+        if (message != null && message.isNotBlank()) {
+            sendNotification(
+                message,
+                NotificationType.INFORMATION,
+                INFO
+            )
+        }
     }
 
     fun error(message: String) {
